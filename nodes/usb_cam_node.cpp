@@ -58,7 +58,7 @@ public:
   //std::string start_service_name_, start_service_name_;
   bool streaming_status_;
   int image_width_, image_height_, framerate_, exposure_, brightness_, contrast_, saturation_, sharpness_, focus_,
-      white_balance_, gain_, power_line_frequency_;
+      white_balance_, gain_, power_line_frequency_, exposure_auto_priority_;
   bool autofocus_, autoexposure_, auto_white_balance_;
   boost::shared_ptr<camera_info_manager::CameraInfoManager> cinfo_;
 
@@ -113,6 +113,7 @@ public:
     node_.param("white_balance", white_balance_, 4000);
     // Powerline frequency filter: Off/50Hz/60Hz
     node_.param("power_line_frequency", power_line_frequency_, -1);
+    node_.param("exposure_auto_priority", exposure_auto_priority_, -1);
 
     // load the camera info
     node_.param("camera_frame_id", img_.header.frame_id, std::string("head_camera"));
@@ -227,6 +228,11 @@ public:
       cam_.set_v4l_parameter("power_line_frequency", power_line_frequency_);
     }
 
+    if (exposure_auto_priority_ >= 0)
+    {
+      cam_.set_v4l_parameter("exposure_auto_priority", exposure_auto_priority_);
+    }
+    
   }
 
   virtual ~UsbCamNode()
